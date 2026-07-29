@@ -1,0 +1,520 @@
+// ============================================
+// AV Platform - Component Diagram
+// C4 Level 3 - LikeC4 Specification
+// ============================================
+// Generated: 2026-03-20
+// Project: Autonomous Vehicle Platform
+// ============================================
+
+specification {
+  element controller {
+    style {
+      shape rectangle
+      color sky
+    }
+  }
+  
+  element service {
+    style {
+      shape rectangle
+      color blue
+    }
+  }
+  
+  element repository {
+    style {
+      shape rectangle
+      color slate
+    }
+  }
+  
+  element adapter {
+    style {
+      shape rectangle
+      color amber
+    }
+  }
+  
+  element middleware {
+    style {
+      shape rectangle
+      color indigo
+    }
+  }
+  
+  element algorithm {
+    style {
+      shape rectangle
+      color red
+    }
+  }
+  
+  element database {
+    style {
+      shape cylinder
+      color slate
+    }
+  }
+  
+  element queue {
+    style {
+      shape queue
+      color amber
+    }
+  }
+}
+
+model {
+  // ==========================================
+  // VMS SERVICE COMPONENTS
+  // ==========================================
+  
+  vms_vehicle_ctrl = controller "Vehicle Controller" {
+    description "HTTP handlers for vehicle CRUD"
+  }
+  
+  vms_ota_ctrl = controller "OTA Controller" {
+    description "OTA update management"
+  }
+  
+  vms_config_ctrl = controller "Config Controller" {
+    description "Configuration profiles"
+  }
+  
+  vms_fleet_ws = controller "Fleet WebSocket" {
+    description "Real-time fleet updates"
+  }
+  
+  vms_vehicle_svc = service "Vehicle Service" {
+    description "Vehicle business logic"
+  }
+  
+  vms_ota_svc = service "OTA Service" {
+    description "OTA deployment orchestration"
+  }
+  
+  vms_heartbeat_svc = service "Heartbeat Service" {
+    description "Vehicle heartbeat processing"
+  }
+  
+  vms_config_svc = service "Config Service" {
+    description "Configuration management"
+  }
+  
+  vms_vehicle_repo = repository "Vehicle Repository" {
+    description "MongoDB vehicle access"
+  }
+  
+  vms_ota_repo = repository "OTA Repository" {
+    description "MongoDB OTA access"
+  }
+  
+  vms_mqtt_adapter = adapter "MQTT Adapter" {
+    description "Vehicle MQTT communication"
+  }
+  
+  vms_vault_adapter = adapter "Vault Adapter" {
+    description "X.509 certificate management"
+  }
+  
+  vms_kafka_adapter = adapter "Kafka Adapter" {
+    description "Event publishing"
+  }
+  
+  vms_s3_adapter = adapter "S3 Adapter" {
+    description "OTA package storage"
+  }
+
+  // ==========================================
+  // MDM SERVICE COMPONENTS
+  // ==========================================
+  
+  mdm_mission_ctrl = controller "Mission Controller" {
+    description "Mission CRUD endpoints"
+  }
+  
+  mdm_assignment_ctrl = controller "Assignment Controller" {
+    description "Vehicle assignment API"
+  }
+  
+  mdm_routing_ctrl = controller "Routing Controller" {
+    description "Route planning endpoints"
+  }
+  
+  mdm_mission_svc = service "Mission Service" {
+    description "Mission lifecycle"
+  }
+  
+  mdm_assignment_svc = service "Assignment Service" {
+    description "Task assignment"
+  }
+  
+  mdm_routing_svc = service "Routing Service" {
+    description "Route calculation"
+  }
+  
+  mdm_queue_svc = service "Queue Service" {
+    description "Priority queue management"
+  }
+  
+  mdm_optimization_svc = service "Optimization Service" {
+    description "Fleet optimization"
+  }
+  
+  mdm_hungarian = algorithm "Hungarian Algorithm" {
+    description "Optimal assignment O(n³)"
+  }
+  
+  mdm_astar = algorithm "A* Pathfinding" {
+    description "Shortest path"
+  }
+  
+  mdm_tsp = algorithm "TSP Solver" {
+    description "Multi-stop optimization"
+  }
+  
+  mdm_mission_repo = repository "Mission Repository" {
+    description "MongoDB mission access"
+  }
+  
+  mdm_route_repo = repository "Route Repository" {
+    description "MongoDB route access"
+  }
+
+  // ==========================================
+  // AOC SERVICE COMPONENTS
+  // ==========================================
+  
+  aoc_telemetry_http = controller "Telemetry HTTP" {
+    description "Telemetry query endpoints"
+  }
+  
+  aoc_telemetry_ws = controller "Telemetry WebSocket" {
+    description "Real-time telemetry streaming"
+  }
+  
+  aoc_alert_ctrl = controller "Alert Controller" {
+    description "Alert management"
+  }
+  
+  aoc_command_ctrl = controller "Command Controller" {
+    description "Vehicle commands"
+  }
+  
+  aoc_teleop_ctrl = controller "Tele-op Controller" {
+    description "Tele-operation sessions"
+  }
+  
+  aoc_telemetry_svc = service "Telemetry Service" {
+    description "Telemetry processing"
+  }
+  
+  aoc_alert_svc = service "Alert Service" {
+    description "Alert generation and routing"
+  }
+  
+  aoc_command_svc = service "Command Service" {
+    description "Command execution"
+  }
+  
+  aoc_teleop_svc = service "Tele-op Service" {
+    description "Remote operation"
+  }
+  
+  aoc_alert_repo = repository "Alert Repository" {
+    description "MongoDB alert access"
+  }
+  
+  aoc_telemetry_repo = repository "Telemetry Repository" {
+    description "InfluxDB time-series"
+  }
+  
+  aoc_redis_adapter = adapter "Redis Adapter" {
+    description "Pub/Sub"
+  }
+  
+  aoc_nats_adapter = adapter "NATS Adapter" {
+    description "Command delivery"
+  }
+
+  // ==========================================
+  // SSC SERVICE COMPONENTS
+  // ==========================================
+  
+  ssc_auth_ctrl = controller "Auth Controller" {
+    description "Login, logout, token refresh"
+  }
+  
+  ssc_user_ctrl = controller "User Controller" {
+    description "User management"
+  }
+  
+  ssc_audit_ctrl = controller "Audit Controller" {
+    description "Audit log queries"
+  }
+  
+  ssc_auth_svc = service "Auth Service" {
+    description "JWT, MFA authentication"
+  }
+  
+  ssc_mfa_svc = service "MFA Service" {
+    description "TOTP verification"
+  }
+  
+  ssc_rbac_svc = service "RBAC Service" {
+    description "Permission checking"
+  }
+  
+  ssc_audit_svc = service "Audit Service" {
+    description "Audit logging"
+  }
+  
+  ssc_jwt_middleware = middleware "JWT Middleware" {
+    description "Token validation"
+  }
+  
+  ssc_rbac_middleware = middleware "RBAC Middleware" {
+    description "Permission enforcement"
+  }
+  
+  ssc_user_repo = repository "User Repository" {
+    description "PostgreSQL user access"
+  }
+  
+  ssc_audit_repo = repository "Audit Repository" {
+    description "PostgreSQL audit access"
+  }
+
+  // ==========================================
+  // DATA LAYER
+  // ==========================================
+  
+  vms_mongodb = database "MongoDB" {
+    description "Vehicles, OTA, configs"
+    technology "MongoDB 7.0+"
+  }
+  
+  mdm_mongodb = database "MongoDB" {
+    description "Missions, routes"
+    technology "MongoDB 7.0+"
+  }
+  
+  ssc_postgres = database "PostgreSQL" {
+    description "Users, roles, audit"
+    technology "PostgreSQL 16+"
+  }
+  
+  aoc_influxdb = database "InfluxDB" {
+    description "Telemetry time-series"
+    technology "InfluxDB 2.7+"
+  }
+  
+  redis = database "Redis" {
+    description "Sessions, cache, pub/sub"
+    technology "Redis 7.2+"
+  }
+
+  // ==========================================
+  // MESSAGING
+  // ==========================================
+  
+  kafka = queue "Apache Kafka" {
+    description "Event streaming"
+  }
+  
+  nats = queue "NATS" {
+    description "Commands"
+  }
+  
+  mqtt = queue "MQTT Broker" {
+    description "Vehicle communication"
+  }
+
+  // ==========================================
+  // RELATIONSHIPS WITHIN VMS
+  // ==========================================
+  
+  vms_vehicle_ctrl -> vms_vehicle_svc "Uses"
+  vms_ota_ctrl -> vms_ota_svc "Uses"
+  vms_config_ctrl -> vms_config_svc "Uses"
+  
+  vms_vehicle_svc -> vms_vehicle_repo "Uses"
+  vms_ota_svc -> vms_ota_repo "Uses"
+  
+  vms_vehicle_svc -> vms_mqtt_adapter "Vehicle communication"
+  vms_vehicle_svc -> vms_vault_adapter "Certificates"
+  vms_vehicle_svc -> vms_kafka_adapter "Publish events"
+  vms_ota_svc -> vms_s3_adapter "OTA storage"
+  
+  vms_heartbeat_svc -> redis "TTL tracking"
+  vms_heartbeat_svc -> vms_mongodb "Update timestamp"
+  vms_heartbeat_svc -> mqtt "Subscribe heartbeats"
+  
+  vms_vehicle_repo -> vms_mongodb "Read/Write"
+  
+  vms_fleet_ws -> redis "Subscribe vehicle updates"
+
+  // ==========================================
+  // RELATIONSHIPS WITHIN MDM
+  // ==========================================
+  
+  mdm_mission_ctrl -> mdm_mission_svc "Uses"
+  mdm_assignment_ctrl -> mdm_assignment_svc "Uses"
+  mdm_routing_ctrl -> mdm_routing_svc "Uses"
+  
+  mdm_mission_svc -> mdm_mission_repo "Uses"
+  mdm_routing_svc -> mdm_route_repo "Uses"
+  
+  mdm_assignment_svc -> mdm_hungarian "Optimal assignment"
+  mdm_assignment_svc -> mdm_astar "Pathfinding"
+  mdm_routing_svc -> mdm_tsp "Multi-stop"
+  
+  mdm_assignment_svc -> mdm_queue_svc "Queue operations"
+  mdm_queue_svc -> redis "Sorted set"
+  
+  mdm_mission_repo -> mdm_mongodb "Read/Write"
+  
+  mdm_mission_svc -> kafka "Publish events"
+  mdm_assignment_svc -> kafka "Mission events"
+
+  // ==========================================
+  // RELATIONSHIPS WITHIN AOC
+  // ==========================================
+  
+  aoc_telemetry_http -> aoc_telemetry_svc "Uses"
+  aoc_telemetry_ws -> aoc_telemetry_svc "Uses"
+  aoc_alert_ctrl -> aoc_alert_svc "Uses"
+  aoc_command_ctrl -> aoc_command_svc "Uses"
+  
+  aoc_telemetry_svc -> aoc_telemetry_repo "Uses"
+  aoc_alert_svc -> aoc_alert_repo "Uses"
+  
+  aoc_telemetry_svc -> aoc_redis_adapter "Pub/Sub"
+  aoc_command_svc -> aoc_nats_adapter "Command delivery"
+  
+  aoc_telemetry_repo -> aoc_influxdb "Read/Write"
+  aoc_alert_repo -> vms_mongodb "Read/Write"
+  
+  aoc_telemetry_svc -> kafka "Consume telemetry"
+  
+  aoc_telemetry_ws -> redis "Subscribe updates"
+
+  // ==========================================
+  // RELATIONSHIPS WITHIN SSC
+  // ==========================================
+  
+  ssc_auth_ctrl -> ssc_auth_svc "Uses"
+  ssc_user_ctrl -> ssc_rbac_svc "Uses"
+  ssc_audit_ctrl -> ssc_audit_svc "Uses"
+  
+  ssc_auth_svc -> ssc_mfa_svc "MFA verification"
+  ssc_auth_svc -> ssc_user_repo "User lookup"
+  ssc_rbac_svc -> ssc_user_repo "Permission lookup"
+  ssc_audit_svc -> ssc_audit_repo "Write logs"
+  
+  ssc_auth_svc -> redis "Session storage"
+  
+  ssc_jwt_middleware -> ssc_auth_svc "Validate token"
+  ssc_rbac_middleware -> ssc_rbac_svc "Check permissions"
+  
+  ssc_user_repo -> ssc_postgres "Read/Write"
+  ssc_audit_repo -> ssc_postgres "Append-only"
+  
+  ssc_audit_svc -> kafka "Audit events"
+}
+
+views {
+  view vms_components of vms_service {
+    title "VMS Service - Component Details (C4 Level 3)"
+    description "Vehicle Management System internal structure"
+    
+    include
+      vms_vehicle_ctrl,
+      vms_ota_ctrl,
+      vms_config_ctrl,
+      vms_fleet_ws,
+      vms_vehicle_svc,
+      vms_ota_svc,
+      vms_heartbeat_svc,
+      vms_config_svc,
+      vms_vehicle_repo,
+      vms_ota_repo,
+      vms_mqtt_adapter,
+      vms_vault_adapter,
+      vms_kafka_adapter,
+      vms_s3_adapter,
+      vms_mongodb,
+      redis,
+      kafka,
+      mqtt
+  }
+  
+  view mdm_components of mdm_service {
+    title "MDM Service - Component Details (C4 Level 3)"
+    description "Mission & Dispatch Management internal structure"
+    
+    include
+      mdm_mission_ctrl,
+      mdm_assignment_ctrl,
+      mdm_routing_ctrl,
+      mdm_mission_svc,
+      mdm_assignment_svc,
+      mdm_routing_svc,
+      mdm_queue_svc,
+      mdm_optimization_svc,
+      mdm_hungarian,
+      mdm_astar,
+      mdm_tsp,
+      mdm_mission_repo,
+      mdm_route_repo,
+      mdm_mongodb,
+      redis,
+      kafka
+  }
+  
+  view aoc_components of aoc_service {
+    title "AOC Service - Component Details (C4 Level 3)"
+    description "Autonomous Operations Center internal structure"
+    
+    include
+      aoc_telemetry_http,
+      aoc_telemetry_ws,
+      aoc_alert_ctrl,
+      aoc_command_ctrl,
+      aoc_teleop_ctrl,
+      aoc_telemetry_svc,
+      aoc_alert_svc,
+      aoc_command_svc,
+      aoc_teleop_svc,
+      aoc_alert_repo,
+      aoc_telemetry_repo,
+      aoc_redis_adapter,
+      aoc_nats_adapter,
+      vms_mongodb,
+      aoc_influxdb,
+      redis,
+      kafka,
+      nats
+  }
+  
+  view ssc_components of ssc_service {
+    title "SSC Service - Component Details (C4 Level 3)"
+    description "Safety, Security & Compliance internal structure"
+    
+    include
+      ssc_auth_ctrl,
+      ssc_user_ctrl,
+      ssc_audit_ctrl,
+      ssc_auth_svc,
+      ssc_mfa_svc,
+      ssc_rbac_svc,
+      ssc_audit_svc,
+      ssc_jwt_middleware,
+      ssc_rbac_middleware,
+      ssc_user_repo,
+      ssc_audit_repo,
+      ssc_postgres,
+      redis,
+      kafka
+  }
+}

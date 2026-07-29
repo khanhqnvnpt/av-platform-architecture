@@ -1,0 +1,230 @@
+// ============================================
+// AV Platform - System Context Diagram
+// C4 Level 1 - LikeC4 Specification
+// ============================================
+// Generated: 2026-03-20
+// Project: Autonomous Vehicle Platform
+// ============================================
+
+specification {
+  element actor {
+    style {
+      shape person
+      color green
+    }
+  }
+  
+  element system {
+    style {
+      shape rectangle
+      color primary
+    }
+  }
+  
+  element external_system {
+    style {
+      shape rectangle
+      color gray
+    }
+  }
+}
+
+model {
+  // ==========================================
+  // ACTORS (Users)
+  // ==========================================
+  
+  fleet_manager = actor "Fleet Manager" {
+    description "Manages vehicle lifecycle, OTA updates, configuration"
+  }
+  
+  dispatcher = actor "Dispatcher" {
+    description "Creates missions, assigns vehicles"
+  }
+  
+  operator = actor "Operator" {
+    description "Monitors vehicles real-time"
+  }
+  
+  safety_monitor = actor "Safety Monitor" {
+    description "Handles alerts, incidents, tele-op"
+  }
+  
+  data_scientist = actor "Data Scientist" {
+    description "Analyzes data, trains ML models"
+  }
+  
+  map_engineer = actor "Map Engineer" {
+    description "Manages HD maps, ODD"
+  }
+  
+  security_admin = actor "Security Admin" {
+    description "Manages RBAC, audit logs"
+  }
+  
+  developer = actor "Developer" {
+    description "Integrates via API/SDK"
+  }
+  
+  end_user = actor "End User (Rider)" {
+    description "Books autonomous rides"
+  }
+  
+  enterprise_client = actor "Enterprise Client" {
+    description "Builds custom ride-hailing apps"
+  }
+
+  // ==========================================
+  // MAIN SYSTEM
+  // ==========================================
+  
+  av_platform = system "AV Platform" {
+    description "Comprehensive autonomous vehicle fleet management platform"
+    technology "Go 1.25+, React 18+, MongoDB, PostgreSQL, Kafka, Redis"
+  }
+
+  // ==========================================
+  // EXTERNAL SYSTEMS
+  // ==========================================
+  
+  vehicle_fleet = external_system "AV Fleet" {
+    description "Apollo, Autoware, Custom AVs"
+    technology "MQTT/TLS, gRPC"
+  }
+  
+  map_provider = external_system "Map Provider" {
+    description "Mapbox, Google Maps, HERE"
+    technology "HTTPS/REST"
+  }
+  
+  cdn = external_system "CDN" {
+    description "OTA package distribution"
+    technology "CloudFront, Akamai"
+  }
+  
+  object_storage = external_system "Object Storage" {
+    description "S3/MinIO for sensor data"
+    technology "S3 API"
+  }
+  
+  notification_service = external_system "Notification Service" {
+    description "Firebase, SendGrid, Twilio"
+    technology "REST"
+  }
+  
+  oauth_provider = external_system "OAuth Provider" {
+    description "Keycloak, Auth0"
+    technology "OAuth 2.0, OIDC"
+  }
+  
+  weather_service = external_system "Weather Service" {
+    description "OpenWeatherMap"
+    technology "HTTPS"
+  }
+  
+  traffic_service = external_system "Traffic Service" {
+    description "TomTom, HERE Traffic"
+    technology "HTTPS/REST"
+  }
+  
+  payment_gateway = external_system "Payment Gateway" {
+    description "Stripe, VNPay, MoMo"
+    technology "REST, Webhooks"
+  }
+
+  // ==========================================
+  // RELATIONSHIPS
+  // ==========================================
+  
+  // Actors → AV Platform
+  fleet_manager -> av_platform "Manages vehicles, OTA"
+  dispatcher -> av_platform "Creates missions"
+  operator -> av_platform "Monitors, controls"
+  safety_monitor -> av_platform "Handles alerts"
+  data_scientist -> av_platform "Accesses datasets"
+  map_engineer -> av_platform "Updates HD maps"
+  security_admin -> av_platform "Configures RBAC"
+  developer -> av_platform "API integration"
+  end_user -> av_platform "Books rides"
+  enterprise_client -> av_platform "Manages tenant"
+  // AV Platform ↔ External Systems
+  av_platform <-> vehicle_fleet "Telemetry, commands" {
+    technology "MQTT/TLS, gRPC"
+  }
+  
+  av_platform -> map_provider "Map tiles" {
+    technology "HTTPS"
+  }
+  
+  av_platform -> cdn "OTA packages" {
+    technology "S3 API"
+  }
+  
+  av_platform -> object_storage "Sensor data, videos" {
+    technology "S3 API"
+  }
+  
+  av_platform -> notification_service "Alerts, notifications" {
+    technology "REST"
+  }
+  
+  av_platform -> oauth_provider "SSO authentication" {
+    technology "OAuth 2.0"
+  }
+  
+  av_platform -> weather_service "Weather data" {
+    technology "HTTPS"
+  }
+  
+  av_platform -> traffic_service "Traffic data" {
+    technology "HTTPS/REST"
+  }
+  
+  av_platform <-> payment_gateway "Payment processing" {
+    technology "REST, Webhooks"
+  }
+}
+
+views {
+  view context of av_platform {
+    title "AV Platform - System Context (C4 Level 1)"
+    description "System scope and external interactions"
+    
+    include *
+    
+    style fleet_manager {
+      color green
+    }
+    style dispatcher {
+      color green
+    }
+    style operator {
+      color green
+    }
+    style safety_monitor {
+      color green
+    }
+    style data_scientist {
+      color green
+    }
+    style map_engineer {
+      color green
+    }
+    style security_admin {
+      color green
+    }
+    style developer {
+      color green
+    }
+    style end_user {
+      color green
+    }
+    style enterprise_client {
+      color green
+    }
+    
+    style av_platform {
+      color primary
+    }
+  }
+}

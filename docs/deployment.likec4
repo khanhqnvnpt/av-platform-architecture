@@ -1,0 +1,470 @@
+// ============================================
+// AV Platform - Deployment Architecture
+// Single View - K8s + VM Infrastructure
+// High Availability & Cluster Configuration
+// ============================================
+// Generated: 2026-03-20
+// Project: Autonomous Vehicle Platform
+// ============================================
+
+specification {
+  element cloud {
+    style {
+      shape rectangle
+      color slate
+    }
+  }
+  
+  element k8sCluster {
+    style {
+      shape rectangle
+      color sky
+    }
+  }
+  
+  element namespace {
+    style {
+      shape rectangle
+      color blue
+    }
+  }
+  
+  element deployment {
+    style {
+      shape rectangle
+      color green
+    }
+  }
+  
+  element vmCluster {
+    style {
+      shape rectangle
+      color amber
+    }
+  }
+
+
+  element objectStorage {
+    style {
+      shape component
+      color green
+    }
+  }
+  
+  element dbCluster {
+    style {
+      shape component
+      color slate
+    }
+  }
+  
+  element msgQueue {
+    style {
+      shape component
+      color amber
+    }
+  }
+
+  
+  element loadBalancer {
+    style {
+      shape rectangle
+      color indigo
+    }
+  }
+  
+  element security {
+    style {
+      shape rectangle
+      color red
+    }
+  }
+  
+  element monitoring {
+    style {
+      shape rectangle
+      color indigo
+    }
+  }
+  
+  element external {
+    style {
+      shape rectangle
+      color muted
+    }
+  }
+}
+
+model {
+  // ==========================================
+  // EXTERNAL / EDGE
+  // ==========================================
+  
+  internet = external 'Internet' {
+    description 'Public internet traffic'
+  }
+  
+  vehicles = external 'AV Fleet' {
+    description '10,000+ vehicles'
+    technology 'MQTT/TLS'
+  }
+  
+  // ==========================================
+  // CLOUD INFRASTRUCTURE
+  // ==========================================
+  
+  cloud_infra = cloud 'AWS / GCP / Azure' {
+    description 'Multi-AZ Production (ap-southeast-1a/b/c)'
+    
+    // ------------------------------------------------
+    // EDGE / SECURITY
+    // ------------------------------------------------
+    
+    waf = security 'WAF + DDoS Protection' {
+      description 'AWS WAF / Cloud Armor'
+      technology 'OWASP rules, Rate limiting'
+    }
+    
+    cdn = external 'CDN' {
+      description 'CloudFront / Cloud CDN'
+      technology 'Static assets, OTA packages'
+    }
+    
+    dns = external 'Route 53 / Cloud DNS' {
+      description 'DNS with health checks'
+      technology 'Failover routing'
+    }
+    
+    alb = loadBalancer 'Application Load Balancer' {
+      description 'Layer 7 LB, SSL termination'
+      technology 'Multi-AZ, Auto-scaling'
+    }
+    
+    nlb_mqtt = loadBalancer 'NLB (MQTT)' {
+      description 'Layer 4 LB for MQTT'
+      technology 'Sticky sessions'
+    }
+    
+    // ------------------------------------------------
+    // KUBERNETES CLUSTER
+    // ------------------------------------------------
+    
+    k8s = k8sCluster 'EKS / GKE Cluster' {
+      description 'Managed K8s 1.29+'
+      technology '3 masters, auto-scaling workers (10-100 nodes)'
+      
+      // --- Ingress & Gateway ---
+      ingress = deployment 'NGINX Ingress' {
+        description 'Ingress Controller'
+        technology 'DaemonSet, 3+ replicas'
+      }
+      
+      kong = deployment 'Kong Gateway' {
+        description 'API Gateway'
+        technology 'HPA 3-10 replicas'
+      }
+      
+      // --- Frontend ---
+      frontend = namespace 'Frontend' {
+        description 'Web Application'
+        technology 'React, HPA 3-20'
+      }
+      
+      // --- Go Backend Services ---
+      vms = deployment 'VMS' {
+        description 'Vehicle Management'
+        technology 'Go, HPA 3-15'
+      }
+      
+      aoc = deployment 'AOC' {
+        description 'Operations Center'
+        technology 'Go, HPA 5-25'
+      }
+      
+      mdm = deployment 'MDM' {
+        description 'Mission Dispatch'
+        technology 'Go, HPA 3-15'
+      }
+      
+      dcp = deployment 'DCP' {
+        description 'Data Collection'
+        technology 'Go, HPA 3-10'
+      }
+      
+      hml = deployment 'HML' {
+        description 'HD Maps'
+        technology 'Go, HPA 2-8'
+      }
+      
+      ssc = deployment 'SSC' {
+        description 'Security & Auth'
+        technology 'Go, HPA 3-10'
+      }
+      
+      dpe = deployment 'DPE' {
+        description 'Developer Platform'
+        technology 'Go, HPA 2-6'
+      }
+      
+      apollo = deployment 'Apollo' {
+        description 'Apollo Integration'
+        technology 'Go + gRPC, HPA 2-8'
+      }
+      
+      fleet_opt = deployment 'Fleet Optimization' {
+        description 'AI Optimization'
+        technology 'Go + Python, HPA 2-6'
+      }
+      
+      // --- Java Service Provider Services ---
+      rhs = deployment 'RHS' {
+        description 'Ride-Hailing Service'
+        technology 'Java 21, Spring Boot, HPA 3-15'
+      }
+      
+      fpe = deployment 'FPE' {
+        description 'Fare & Pricing Engine'
+        technology 'Java 21, Spring Boot, HPA 2-8'
+      }
+      
+      bms = deployment 'BMS' {
+        description 'Billing & Subscription'
+        technology 'Java 21, Spring Boot, HPA 2-8'
+      }
+      
+      pay = deployment 'PAY' {
+        description 'Payment Processing'
+        technology 'Java 21, Spring Boot, HPA 3-10'
+      }
+      
+      tms = deployment 'TMS' {
+        description 'Tenant Management'
+        technology 'Java 21, Spring Boot, HPA 2-6'
+      }
+      
+      ncs = deployment 'NCS' {
+        description 'Notification Service'
+        technology 'Java 21, Spring Boot, HPA 2-8'
+      }
+      
+      abi = deployment 'ABI' {
+        description 'Analytics & BI'
+        technology 'Java 21, Spring Boot, HPA 2-6'
+      }
+      
+      mkp = deployment 'MKP' {
+        description 'Marketplace'
+        technology 'Java 21, Spring Boot, HPA 2-6'
+      }
+      
+      // --- Workers ---
+      telemetry_worker = deployment 'Telemetry Processor' {
+        description 'Process telemetry'
+        technology 'Go, HPA 10-50'
+      }
+      
+      alert_worker = deployment 'Alert Engine' {
+        description 'Anomaly detection'
+        technology 'Go, HPA 3-15'
+      }
+      
+      sync_worker = deployment 'Data Sync' {
+        description 'File sync'
+        technology 'Go, HPA 5-30'
+      }
+      
+      // --- Monitoring ---
+      monitoring_stack = monitoring 'Observability Stack' {
+        description 'Prometheus, Grafana, Loki, Jaeger'
+        technology 'HA mode'
+      }
+    }
+    
+    // ------------------------------------------------
+    // DATABASES (VM Clusters - Multi-AZ)
+    // ------------------------------------------------
+    
+    mongodb = dbCluster 'MongoDB Cluster' {
+      description 'Document DB - vehicles, missions'
+      technology '3-node Replica Set (Primary + 2 Secondary)'
+    }
+    
+    postgres = dbCluster 'PostgreSQL Cluster' {
+      description 'Relational DB - users, audit, PostGIS'
+      technology 'Patroni HA (Primary + 2 Standby + 3 etcd)'
+    }
+    
+    influxdb = dbCluster 'InfluxDB Cluster' {
+      description 'Time-series - telemetry'
+      technology '3 Data + 3 Meta nodes'
+    }
+    
+    redis = dbCluster 'Redis Cluster' {
+      description 'Cache, sessions, pub/sub'
+      technology '6 nodes (3 Master + 3 Replica)'
+    }
+    
+    elasticsearch = dbCluster 'Elasticsearch Cluster' {
+      description 'Search, logs'
+      technology '3 Master + 3 Data + Kibana'
+    }
+    
+    // ------------------------------------------------
+    // MESSAGE QUEUES (VM Clusters - Multi-AZ)
+    // ------------------------------------------------
+    
+    kafka = msgQueue 'Kafka Cluster' {
+      description 'Event streaming'
+      technology '3 Brokers (KRaft) + Schema Registry'
+    }
+    
+    nats = msgQueue 'NATS Cluster' {
+      description 'Commands, notifications'
+      technology '3 nodes + JetStream'
+    }
+    
+    mqtt = msgQueue 'EMQX Cluster' {
+      description 'Vehicle IoT messaging'
+      technology '3 nodes, 100K+ connections'
+    }
+    
+    // ------------------------------------------------
+    // STORAGE (VM Clusters)
+    // ------------------------------------------------
+    
+    minio = objectStorage 'MinIO Cluster' {
+      description 'S3 Object Storage'
+      technology '4 nodes, Erasure Coding, Petabyte-scale'
+    }
+    
+    vault = security 'Vault HA' {
+      description 'Secrets management'
+      technology '3 nodes, Raft consensus'
+    }
+  }
+  
+  // ==========================================
+  // RELATIONSHIPS
+  // ==========================================
+  
+  // --- Internet → Edge ---
+  internet -> cloud_infra.dns
+  internet -> cloud_infra.cdn
+  cloud_infra.dns -> cloud_infra.waf
+  cloud_infra.waf -> cloud_infra.alb
+  
+  // --- Vehicles → MQTT ---
+  vehicles -> cloud_infra.nlb_mqtt
+  cloud_infra.nlb_mqtt -> cloud_infra.mqtt
+  
+  // --- ALB → K8s ---
+  cloud_infra.alb -> cloud_infra.k8s.ingress
+  cloud_infra.k8s.ingress -> cloud_infra.k8s.kong
+  
+  // --- Kong → Services ---
+  cloud_infra.k8s.kong -> cloud_infra.k8s.frontend
+  cloud_infra.k8s.kong -> cloud_infra.k8s.vms
+  cloud_infra.k8s.kong -> cloud_infra.k8s.aoc
+  cloud_infra.k8s.kong -> cloud_infra.k8s.mdm
+  cloud_infra.k8s.kong -> cloud_infra.k8s.dcp
+  cloud_infra.k8s.kong -> cloud_infra.k8s.hml
+  cloud_infra.k8s.kong -> cloud_infra.k8s.ssc
+  cloud_infra.k8s.kong -> cloud_infra.k8s.dpe
+  cloud_infra.k8s.kong -> cloud_infra.k8s.apollo
+  cloud_infra.k8s.kong -> cloud_infra.k8s.fleet_opt
+  cloud_infra.k8s.kong -> cloud_infra.k8s.rhs
+  cloud_infra.k8s.kong -> cloud_infra.k8s.fpe
+  cloud_infra.k8s.kong -> cloud_infra.k8s.bms
+  cloud_infra.k8s.kong -> cloud_infra.k8s.pay
+  cloud_infra.k8s.kong -> cloud_infra.k8s.tms
+  cloud_infra.k8s.kong -> cloud_infra.k8s.ncs
+  cloud_infra.k8s.kong -> cloud_infra.k8s.abi
+  cloud_infra.k8s.kong -> cloud_infra.k8s.mkp
+  
+  // --- Go Services → Databases ---
+  cloud_infra.k8s.vms -> cloud_infra.mongodb
+  cloud_infra.k8s.vms -> cloud_infra.redis
+  cloud_infra.k8s.vms -> cloud_infra.kafka
+  cloud_infra.k8s.vms -> cloud_infra.mqtt
+  cloud_infra.k8s.vms -> cloud_infra.vault
+  cloud_infra.k8s.vms -> cloud_infra.minio
+  
+  cloud_infra.k8s.aoc -> cloud_infra.influxdb
+  cloud_infra.k8s.aoc -> cloud_infra.redis
+  cloud_infra.k8s.aoc -> cloud_infra.mongodb
+  cloud_infra.k8s.aoc -> cloud_infra.nats
+  
+  cloud_infra.k8s.mdm -> cloud_infra.mongodb
+  cloud_infra.k8s.mdm -> cloud_infra.redis
+  cloud_infra.k8s.mdm -> cloud_infra.nats
+  
+  cloud_infra.k8s.dcp -> cloud_infra.mongodb
+  cloud_infra.k8s.dcp -> cloud_infra.elasticsearch
+  cloud_infra.k8s.dcp -> cloud_infra.minio
+  
+  cloud_infra.k8s.hml -> cloud_infra.postgres
+  cloud_infra.k8s.hml -> cloud_infra.minio
+  
+  cloud_infra.k8s.ssc -> cloud_infra.postgres
+  cloud_infra.k8s.ssc -> cloud_infra.redis
+  
+  cloud_infra.k8s.apollo -> cloud_infra.influxdb
+  cloud_infra.k8s.apollo -> cloud_infra.mongodb
+  cloud_infra.k8s.apollo -> cloud_infra.mqtt
+  
+  cloud_infra.k8s.fleet_opt -> cloud_infra.mongodb
+  cloud_infra.k8s.fleet_opt -> cloud_infra.redis
+  
+  // --- Java Services → Databases ---
+  cloud_infra.k8s.rhs -> cloud_infra.mongodb
+  cloud_infra.k8s.rhs -> cloud_infra.redis
+  cloud_infra.k8s.rhs -> cloud_infra.kafka
+  cloud_infra.k8s.rhs -> cloud_infra.nats
+  
+  cloud_infra.k8s.fpe -> cloud_infra.mongodb
+  cloud_infra.k8s.fpe -> cloud_infra.redis
+  
+  cloud_infra.k8s.bms -> cloud_infra.mongodb
+  cloud_infra.k8s.bms -> cloud_infra.redis
+  
+  cloud_infra.k8s.pay -> cloud_infra.mongodb
+  cloud_infra.k8s.pay -> cloud_infra.redis
+  
+  cloud_infra.k8s.tms -> cloud_infra.mongodb
+  cloud_infra.k8s.tms -> cloud_infra.redis
+  cloud_infra.k8s.tms -> cloud_infra.minio
+  
+  cloud_infra.k8s.ncs -> cloud_infra.mongodb
+  cloud_infra.k8s.ncs -> cloud_infra.redis
+  
+  cloud_infra.k8s.abi -> cloud_infra.elasticsearch
+  cloud_infra.k8s.abi -> cloud_infra.influxdb
+  cloud_infra.k8s.abi -> cloud_infra.minio
+  
+  cloud_infra.k8s.mkp -> cloud_infra.mongodb
+  cloud_infra.k8s.mkp -> cloud_infra.redis
+  cloud_infra.k8s.mkp -> cloud_infra.minio
+  
+  // --- Workers → Infrastructure ---
+  cloud_infra.k8s.telemetry_worker -> cloud_infra.kafka
+  cloud_infra.k8s.telemetry_worker -> cloud_infra.influxdb
+  cloud_infra.k8s.telemetry_worker -> cloud_infra.redis
+  
+  cloud_infra.k8s.alert_worker -> cloud_infra.redis
+  cloud_infra.k8s.alert_worker -> cloud_infra.nats
+  
+  cloud_infra.k8s.sync_worker -> cloud_infra.kafka
+  cloud_infra.k8s.sync_worker -> cloud_infra.minio
+  
+  // --- MQTT → Kafka Bridge ---
+  cloud_infra.mqtt -> cloud_infra.kafka
+}
+
+views {
+  view deployment of cloud_infra {
+    title 'AV Platform - Production Deployment Architecture'
+    description 'K8s (Stateless) + VM Clusters (Stateful) - Multi-AZ HA'
+    
+    include *
+  }
+}

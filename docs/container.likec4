@@ -1,0 +1,424 @@
+// ============================================
+// AV Platform - Container Diagram
+// C4 Level 2 - LikeC4 Specification
+// ============================================
+// Generated: 2026-03-20
+// Project: Autonomous Vehicle Platform
+// ============================================
+
+specification {
+  element webapp {
+    style {
+      shape browser
+      color sky
+    }
+  }
+  
+  element mobileapp {
+    style {
+      shape mobile
+      color sky
+    }
+  }
+  
+  element service {
+    style {
+      shape rectangle
+      color blue
+    }
+  }
+  
+  element database {
+    style {
+      shape cylinder
+      color slate
+    }
+  }
+  
+  element queue {
+    style {
+      shape queue
+      color amber
+    }
+  }
+  
+  element storage {
+    style {
+      shape cylinder
+      color green
+    }
+  }
+  
+  element gateway {
+    style {
+      shape hexagon
+      color indigo
+    }
+  }
+  
+  element worker {
+    style {
+      shape rectangle
+      color orange
+    }
+  }
+}
+
+model {
+  // ==========================================
+  // PRESENTATION LAYER
+  // ==========================================
+  
+  web_app = webapp "Web Application" {
+    description "Fleet dashboard, operations center, data portal"
+    technology "React 18, TypeScript, MUI v6, Zustand"
+    
+    -> api_gateway "HTTPS/WSS"
+  }
+  
+  mobile_app = mobileapp "Mobile Application" {
+    description "Rider booking, trip tracking"
+    technology "React Native, Mapbox"
+    
+    -> api_gateway "HTTPS"
+  }
+  
+  enterprise_portal = webapp "Enterprise Portal" {
+    description "Tenant management, billing, analytics"
+    technology "React 18, TypeScript, MUI v6"
+    
+    -> api_gateway "HTTPS"
+  }
+
+  // ==========================================
+  // API GATEWAY LAYER
+  // ==========================================
+  
+  api_gateway = gateway "API Gateway" {
+    description "Authentication, rate limiting, routing"
+    technology "Kong/NGINX"
+    
+    -> vms_service "Routes /api/v1/vehicles/*"
+    -> aoc_service "Routes /api/v1/telemetry/*, /api/v1/alerts/*"
+    -> mdm_service "Routes /api/v1/missions/*"
+    -> dcp_service "Routes /api/v1/datasets/*"
+    -> hml_service "Routes /api/v1/hd-maps/*"
+    -> ssc_service "Routes /api/v1/auth/*"
+    -> dpe_service "Routes /api/v1/api-keys/*"
+    -> apollo_service "Routes /api/v1/apollo/*"
+  }
+
+  // ==========================================
+  // GO SERVICES (Backend)
+  // ==========================================
+  
+  vms_service = service "VMS Service" {
+    description "Vehicle lifecycle, OTA, configuration"
+    technology "Go 1.25+, Echo v4"
+    
+    -> mongodb "Vehicles, configs"
+    -> redis "Status cache"
+    -> kafka "Vehicle events"
+    -> vault "X.509 certificates"
+    -> minio "OTA packages"
+    -> mqtt_broker "Vehicle commands"
+  }
+  
+  aoc_service = service "AOC Service" {
+    description "Real-time monitoring, alerts, commands"
+    technology "Go 1.25+, Echo v4"
+    
+    -> influxdb "Telemetry"
+    -> redis "Pub/Sub"
+    -> mongodb "Alerts"
+    -> nats "Commands"
+    -> kafka "Events"
+  }
+  
+  mdm_service = service "MDM Service" {
+    description "Mission dispatch, routing"
+    technology "Go 1.25+, Echo v4"
+    
+    -> mongodb "Missions, routes"
+    -> redis "Queue cache"
+    -> kafka "Mission events"
+    -> hml_service "ODD validation"
+  }
+  
+  dcp_service = service "DCP Service" {
+    description "Data ingestion, storage"
+    technology "Go 1.25+, Echo v4"
+    
+    -> mongodb "Metadata"
+    -> elasticsearch "Search"
+    -> minio "Raw data"
+    -> kafka "Pipeline"
+  }
+  
+  hml_service = service "HML Service" {
+    description "HD maps, ODD, localization"
+    technology "Go 1.25+, Echo v4"
+    
+    -> postgres "PostGIS ODD"
+    -> mongodb "Map metadata"
+    -> minio "Map files"
+    -> redis "Tile cache"
+  }
+  
+  ssc_service = service "SSC Service" {
+    description "Auth, RBAC, audit"
+    technology "Go 1.25+, Echo v4"
+    
+    -> postgres "Users, audit"
+    -> redis "Sessions"
+    -> kafka "Audit events"
+  }
+  
+  dpe_service = service "DPE Service" {
+    description "API keys, SDKs, webhooks"
+    technology "Go 1.25+, Echo v4"
+    
+    -> mongodb "API keys"
+    -> redis "Rate limiting"
+    -> kafka "Analytics"
+  }
+  
+  apollo_service = service "Apollo Service" {
+    description "Baidu Apollo integration"
+    technology "Go 1.25+, gRPC"
+    
+    -> vms_service "Vehicle registration"
+    -> aoc_service "Telemetry"
+    -> influxdb "Module metrics"
+  }
+
+  // ==========================================
+  // JAVA SERVICES (Service Provider)
+  // ==========================================
+  
+  rhs_service = service "RHS Service" {
+    description "Ride-hailing, booking, matching"
+    technology "Java 21, Spring Boot 3.x"
+    
+    -> mongodb "Rides, trips"
+    -> redis "Matching cache"
+    -> kafka "Ride events"
+    -> nats "Real-time updates"
+  }
+  
+  fpe_service = service "FPE Service" {
+    description "Fare calculation, surge pricing"
+    technology "Java 21, Spring Boot 3.x"
+    
+    -> mongodb "Fares"
+    -> redis "Surge cache"
+    -> kafka "Pricing events"
+  }
+  
+  bms_service = service "BMS Service" {
+    description "Billing, subscriptions"
+    technology "Java 21, Spring Boot 3.x"
+    
+    -> mongodb "Invoices"
+    -> redis "Metering"
+    -> kafka "Billing events"
+  }
+  
+  pay_service = service "PAY Service" {
+    description "Payments, wallets"
+    technology "Java 21, Spring Boot 3.x"
+    
+    -> mongodb "Transactions"
+    -> redis "Payment sessions"
+    -> payment_gateway "Process"
+  }
+  
+  tms_service = service "TMS Service" {
+    description "Tenant management"
+    technology "Java 21, Spring Boot 3.x"
+    
+    -> mongodb "Tenants"
+    -> redis "Cache"
+    -> minio "Branding assets"
+  }
+  
+  ncs_service = service "NCS Service" {
+    description "Notifications"
+    technology "Java 21, Spring Boot 3.x"
+    
+    -> mongodb "Notifications"
+    -> notification_service "Deliver"
+  }
+  
+  abi_service = service "ABI Service" {
+    description "Analytics, reporting"
+    technology "Java 21, Spring Boot 3.x"
+    
+    -> elasticsearch "Analytics"
+    -> influxdb "Time-series"
+    -> minio "Exports"
+  }
+  
+  mkp_service = service "MKP Service" {
+    description "Marketplace"
+    technology "Java 21, Spring Boot 3.x"
+    
+    -> mongodb "Catalog"
+    -> redis "Cache"
+    -> kafka "Events"
+  }
+
+  // ==========================================
+  // BACKGROUND WORKERS
+  // ==========================================
+  
+  telemetry_processor = worker "Telemetry Processor" {
+    description "Kafka → InfluxDB → Redis"
+    technology "Go Workers"
+    
+    -> kafka "Consume"
+    -> influxdb "Write"
+    -> redis "Publish"
+  }
+  
+  alert_engine = worker "Alert Engine" {
+    description "Anomaly detection"
+    technology "Go Workers"
+    
+    -> redis "Subscribe"
+    -> mongodb "Rules"
+    -> nats "Alerts"
+  }
+  
+  offline_detector = worker "Offline Detector" {
+    description "Vehicle offline detection"
+    technology "Go Workers"
+    
+    -> redis "TTL check"
+    -> mongodb "Update"
+    -> kafka "Events"
+  }
+
+  // ==========================================
+  // DATA LAYER
+  // ==========================================
+  
+  mongodb = database "MongoDB" {
+    description "Vehicles, missions, configs"
+    technology "MongoDB 7.0+"
+  }
+  
+  postgres = database "PostgreSQL" {
+    description "Users, audit, ODD"
+    technology "PostgreSQL 16+, PostGIS"
+  }
+  
+  influxdb = database "InfluxDB" {
+    description "Telemetry time-series"
+    technology "InfluxDB 2.7+"
+  }
+  
+  redis = database "Redis Cluster" {
+    description "Cache, sessions, pub/sub"
+    technology "Redis 7.2+"
+  }
+  
+  elasticsearch = database "Elasticsearch" {
+    description "Full-text search"
+    technology "Elasticsearch 8.11+"
+  }
+
+  // ==========================================
+  // MESSAGING LAYER
+  // ==========================================
+  
+  kafka = queue "Apache Kafka" {
+    description "Event streaming"
+    technology "Kafka 3.6+"
+  }
+  
+  nats = queue "NATS" {
+    description "Commands, pub/sub"
+    technology "NATS 2.10+"
+  }
+  
+  mqtt_broker = queue "MQTT Broker" {
+    description "Vehicle IoT"
+    technology "VerneMQ/EMQX"
+  }
+
+  // ==========================================
+  // STORAGE LAYER
+  // ==========================================
+  
+  minio = storage "MinIO (S3)" {
+    description "Sensor data, videos, OTA"
+    technology "MinIO"
+  }
+  
+  vault = storage "HashiCorp Vault" {
+    description "Secrets, certificates"
+    technology "Vault 1.15+"
+  }
+
+  // ==========================================
+  // EXTERNAL SYSTEMS
+  // ==========================================
+  
+  vehicle_fleet = external_system "AV Fleet" {
+    technology "MQTT, gRPC"
+  }
+  
+  payment_gateway = external_system "Payment Gateway" {
+    technology "REST, Webhooks"
+  }
+  
+  notification_service = external_system "Notification Service" {
+    technology "REST"
+  }
+}
+
+views {
+  view containers of av_platform {
+    title "AV Platform - Container Diagram (C4 Level 2)"
+    description "All containers and their interactions"
+    
+    include
+      web_app,
+      mobile_app,
+      enterprise_portal,
+      api_gateway,
+      vms_service,
+      aoc_service,
+      mdm_service,
+      dcp_service,
+      hml_service,
+      ssc_service,
+      dpe_service,
+      apollo_service,
+      rhs_service,
+      fpe_service,
+      bms_service,
+      pay_service,
+      tms_service,
+      ncs_service,
+      abi_service,
+      mkp_service,
+      telemetry_processor,
+      alert_engine,
+      offline_detector,
+      mongodb,
+      postgres,
+      influxdb,
+      redis,
+      elasticsearch,
+      kafka,
+      nats,
+      mqtt_broker,
+      minio,
+      vault,
+      vehicle_fleet,
+      payment_gateway,
+      notification_service
+  }
+}
