@@ -7,7 +7,7 @@
     "dev": "likec4 serve",
     "build": "likec4 build docs && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "npx likec4 start"
   },
   "dependencies": {
     "likec4": "^1.59.2",
