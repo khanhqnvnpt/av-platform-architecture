@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "likec4 serve",
-    "build": "likec4 build docs && vite build",
+    "build": "likec4 build docs",
     "lint": "eslint .",
-    "preview": "npx likec4 start"
+    "preview": "likec4 start"
   },
   "dependencies": {
     "likec4": "^1.59.2",
